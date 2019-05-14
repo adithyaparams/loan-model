@@ -45,14 +45,19 @@ def calc():
         income=request.form['income']
         race=request.form['race']
         gender=request.form['gender']
+        eligibility=request.form['eligibility']
+        college_term=int(request.form['term'])
+        family_size=int(request.form['family'])
         cost=int(request.form['cost'])
         expected=int(request.form['expected'])
         actual=int(request.form['actual'])
         dependency=request.form['dependency']
         dependency = True if dependency == 'Dependent' else False
+        eligibility = True if eligibility == 'Eligible' else False
     loans = {}
     loans_length = len(loans)
     if form.validate_on_submit():
-        loans = models.loan_division((expected-actual), True, 4, dependency)
+        loans = models.loan_division((expected-actual), eligibility, college_term, dependency)
+        print(loans, file=sys.stderr)
         loans_length = len(loans)
     return render_template('calc.html', form=form, loans=loans, loans_length=loans_length)
