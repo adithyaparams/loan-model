@@ -1,0 +1,20 @@
+.col-md-3 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(53, 165, 34, .15);
+  border: 1px solid rgba(53, 165, 34, .2);
+}
+
+.synopsis {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(165, 158, 34, .15);
+  border: 1px solid rgba(165, 158, 34, .2);
+}
+
+.col-md-6 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  background-color: rgba(165, 34, 56, .15);
+  border: 1px solid rgba(165, 34, 56, .2);
+}

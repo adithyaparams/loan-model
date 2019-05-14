@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/favicon.ico">
+
+    <title>LoanCalc</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/starter-template.css" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href={{ url_for('index') }}>LoanCalc</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href={{ url_for('index') }}>Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={{ url_for('about') }}>About</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href={{ url_for('types') }}>Variations </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={{ url_for('calc') }}>Calculator</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+
+      <h1>Variations of Student Loans</h1>
+      <p class="lead"> Explore the different types of debt to find the best composition of student loans for you </p>
+      <h3>Direct Loans</h3>
+      <p>Fully titled as the William D. Ford Federal Direct Loan Program, these types of loans are utilized by about one quarter of colleges in 2008. In this program, borrowers do not have a choice of lenders and are offered Stafford, PLUS, and Consolidation loans. Funds for these loans come directly from the US Department of Education, which gets its funds in turn from the US Treasury. Congress sets the maximum interest rates on both FFEL and Direct Loan programs, and while the rates on Stafford Loans are identical, the rate for PLUS loans is higher in the FFEL. Plus loans are much easier to be gain approval for in the Direct Loan program. While FFEL and Direct Loan programs both offer standard repayment, extended repayment and graduated repayment, income-contingent repayment is only in the Direct Loan program.</p>
+      <h3>Federal Family Education Loans (FFEL)</h3>
+      <p>Also known as the federally-guaranteed student loan program, the FFEL program is used by about three quarters of colleges in 2008, some of which were also direct loan colleges as well. In this program, borrowers have a choice of lenders and are offered Stafford, PLUS, and Consolidation loans. The funding for these loans comes from banks and other financial institutions. Many FFEL program lenders have stopped offering consolidation loans due to a lack of profitability. Congress sets the maximum interest rates on both FFEL and Direct Loan programs, and while the rates on Stafford Loans are identical, the rate for PLUS loans is higher in the FFEL. While FFEL and Direct Loan programs both offer standard repayment, extended repayment and graduated repayment, income-sensitive repayment is only in the Direct Loan program.</p>
+      <h3>Stafford Subsidized Loans</h3>
+      <p>Money for these loans comes directly from the federal government in a program called the Federal Direct Student Loan Program. Subsidized loans are reserved for students who can demonstrate a financial hardship, which is defined as family annual income less than about $50,000. If you have a subsidized Stafford loan, you are not responsible for making any payments until after you graduate. Interest rates typically are 3.76%, in reference to the 2017-2018 school year. The government pays your interest for you during your time in collegiate education. However, you cannot accrue more than $23,000 in subsidized Stafford Loans throughout your undergraduate studies.</p>
+      <h3>Stafford Unsubsidized Loans</h3>
+      <p>Money for these loans comes directly from the federal government in a program called the Federal Direct Student Loan Program. All students are eligible for this type of Stafford loan. If you have an unsubsidized loan, you are fully responsible for paying off all the interest accrued on the loan. In 2017, interest rates were fixed at 3.76% during the time the student is still studying in school, but payments are typically deferred — or postponed — until after you graduate. Your annual Stafford Loan limit for unsubsidized loans ranges from $5,500 to $12,500, depending on your year in school and whether you are claimed as a dependent on someone’s tax return. You are eligible for a larger loan if you are financially independent.</p>
+      <h3>Grad PLUS Loans</h3>
+      <p>These loans are for graduate and professional students themselves. PLUS loans are funded directly by the federal government, specifically the US Department of Education. However, the major difference between PLUS loans and other traditional types is that they have no maximum amounts and can be used to cover any education costs not covered by other types financial aid. PLUS loans have a fixed interest rate of 6.31% (2017). The borrower must not have an adverse credit history, and a credit check will be conducted. Although the regulations are strict, you may still have the opportunity to acquire a PLUS loan if you meet additional requirements.</p>
+      <h3>Parent PLUS Loans</h3>
+      <p>These loans are for parents of dependent undergraduate students who are enrolled in school at least half time. PLUS loans are funded directly by the federal government, specifically the US Department of Education. However, the major difference between PLUS loans and other traditional types is that they have no maximum amounts and can be used to cover any education costs not covered by other types financial aid. PLUS loans have a fixed interest rate of 6.31% (2017). The borrower must not have an adverse credit history, and a credit check will be conducted. Although the regulations are strict, you may still have the opportunity to acquire a PLUS loan if you meet additional requirements.</p>
+      <h3>Perkins Loans</h3>
+      <p>This type of loan was extremely popular with need-based college students prior to recent legislations bringing it to an abrupt end on September 30, 2017. Unless a Perkins disbursement had been received prior for the 2017-2018 academic year, the loan program effectively shut down that day. Perkins Loans used to be more desirable than Stafford Loans because they were subsidized and had a 5% fixed interest rate. Other advantages of the Perkins loan included a longer grace period of nine months before repayment began and special loan forgiveness provisions. Because of their favorable terms, Perkins Loans were only reserved for students that demonstrated exceptional financial need. Loans of this variety were granted by a college and not all schools participated.</p>
+      <h3>Consolidation Loans</h3>
+      <p>While most students receive loans from different borrowers annually/per semester, the repayment process can be simplified by applying for a Direct Consolidation Loan. These loans are made in a way so that you make one payment per month to only one servicer. The loan is a fixed-interest loan with rather flexible options that are all dependent on your ability to repay. There is no consolidation fee, although it can only be done once, potentially lowering your monthly payments and also could extending the amount of time needed to pay off the loan. These loans aid in reducing late fees as well. The downside is that, depending on which Direct Consolidation Loan program you choose, your payments can be stretched over a longer period of time, thus forcing you to pay more interest on debt. Additionally, you could lose some of the benefits offered by the original loan such as eligibility for loan forgiveness programs and interest rate discounts. Private student loans are not eligible for the Direct Consolidation Loan program.</p>
+      <hr>
+
+    </main><!-- /.container -->
+
+
+    <footer class="container">
+      <p>&copy; The LoanCalc Company</p>
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/vendor/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  </body>
+</html>
