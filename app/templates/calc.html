@@ -46,11 +46,7 @@
       <h1>Student Debt Calculator</h1>
       <br>
       <form action="" method="post" novalidate>
-        {{ form.csrf_token }}
         {{ form.hidden_tag() }}
-        {% if form.errors %}
-        {{ form.errors }}
-        {% endif %}
         <div class="form-group">
           <label for="institution">Institution</label>
           <input type="text" class="form-control" id="institution" name="institution" placeholder="Enter institution name">
@@ -146,6 +142,7 @@
       </form>
 
       <br>
+
       <!-- <h3>Institutional Scores</h3>
       <p>Scores for your prospective university range from 0 to virtually any positive integer, and is categorized into zones based on factors including average default rates, debt held after graduation, cost of attendance, and debt-to-earnings ratio.
       <div class="container">
@@ -203,6 +200,29 @@
           {% endfor %}
         </tbody>
         </table>
+
+        {% for plan in [ibr_info, icr_info, paye_info, repaye_info] %}
+          <table class="table">
+          <thead>
+            <tr>
+              {% for title in plan[0]: %}
+                <th>{{ title }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for index in [1,3,4,5] %}
+              <tr>
+                <th scope="row">{{ plan[index][0] }}</th>
+                <td>{{ plan[index][1] }}</td>
+                <td>{{ plan[index][2] }}</td>
+                <td>{{ plan[index][3] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+        {% endfor %}
+
       {% endif %}
 
       <hr>

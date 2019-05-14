@@ -7,6 +7,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.expected_conditions import _find_element
 from selenium.webdriver.common.keys import Keys
 import os, itertools, copy
+import sys
 
 def salary_proj(avg):
     r = 0.004
@@ -173,8 +174,13 @@ def income_based_plan(browser, income, family_size, income_growth_rate, old_loan
         browser.find_element_by_xpath("//td/span").text))
     table = browser.find_elements_by_xpath("//td")
     values = [item.text for item in table]
-    split_values = list(grouper(4, values))
-    split_values = [['-', 'Original', plan.upper(), 'Savings']] + split_values[:5]
+    tuple_values = list(grouper(4, values))
+    split_values = []
+    for x in tuple_values:
+        split_values.append(list(x))
+    split_values = [['', 'Original', plan.upper(), 'Savings']] + split_values[:5]
+    print(split_values, file=sys.stderr)
+    split_values[1][0] = 'Monthly payments'
     return split_values
 
 def open_paye_calc(browser, plan):
@@ -216,8 +222,12 @@ def paye_plan(browser, income, family_size, income_growth_rate, total_debt, mont
         browser.find_element_by_xpath("//td/span").text))
     table = browser.find_elements_by_xpath("//td")
     values = [item.text for item in table]
-    split_values = list(grouper(4, values))
-    split_values = [['-', 'Original', plan.upper(), 'Savings']] + split_values[:5]
+    tuple_values = list(grouper(4, values))
+    split_values = []
+    for x in tuple_values:
+        split_values.append(list(x))
+    split_values = [['', 'Original', plan.upper(), 'Savings']] + split_values[:5]
+    split_values[1][0] = 'Monthly payments'
     return split_values
 
 # browser = open_chrome()
