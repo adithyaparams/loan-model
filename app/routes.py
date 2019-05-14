@@ -2,6 +2,7 @@ from flask import render_template, flash, redirect, request
 from app import app, ge, scorecard, occupation
 from app.forms import LoanForm
 import pandas as pd
+from operator import add
 import sys
 import models
 
@@ -22,6 +23,30 @@ def personal_score(collegeScore, career, income, race, gender, efc):
                     'Other':{'Male':1,'Female':0.8}}
     realIncome = personalIncome * variations[race][gender]
     income = int(income)
+
+def consolidate_debt(loan_dist, type):
+    browser = models.open_chrome()
+    inputs = models.open_loan_payment_calc(browser)
+    payments = [0,0]
+    monthly = 0
+    total_interest = 0
+    balance = 0
+    for key, loans in loan_dist.items():
+        if type == 'federal':
+            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Subsidized'], 5.05, 10, payments[0])
+            monthly += payments[0]
+            total_interest += payments[1]
+            balance += loans['Subsidized']
+            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Unsubsidized'], 5.05, 10, payments[0])
+            monthly += payments[0]
+            total_interest += payments[1]
+            balance += loans['Unsubsidized']
+        if type == 'private':
+            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Private'], 7, 10, payments[0])
+            monthly += payments[0]
+            total_interest += payments[1]
+            balance += loans['Private']
+    return [monthly, total_interest, balance]
 
 @app.route('/')
 @app.route('/index')
@@ -57,7 +82,9 @@ def calc():
     loans = {}
     loans_length = len(loans)
     if form.validate_on_submit():
-        loans = models.loan_division((expected-actual), eligibility, college_term, dependency)
-        print(loans, file=sys.stderr)
+        all_loans = models.loan_division((expected-actual), eligibility, college_term, dependency)
+        loans = all_loans[1]
         loans_length = len(loans)
+        federal_loan = consolidate_debt(all_loans[0], 'federal')
+        private_loan = consolidate_debt(all_loans[0], 'private')
     return render_template('calc.html', form=form, loans=loans, loans_length=loans_length)

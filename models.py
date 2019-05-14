@@ -6,8 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.expected_conditions import _find_element
 from selenium.webdriver.common.keys import Keys
-import os
-import itertools
+import os, itertools, copy
 
 def salary_proj(avg):
     r = 0.004
@@ -89,12 +88,14 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
         if unsub_max < unsub_yearly_max[loan_index]:
             unsub_yearly_max[loan_index] = unsub_max
 
-    for l in loans:
-        loans[l]['Subsidized'] = "$" + place_value(loans[l]['Subsidized'])
-        loans[l]['Unsubsidized'] = "$" + place_value(loans[l]['Unsubsidized'])
-        loans[l]['Private'] = "$" + place_value(loans[l]['Private'])
+    text_loans = copy.deepcopy(loans)
 
-    return loans
+    for l in text_loans:
+        text_loans[l]['Subsidized'] = "$" + place_value(text_loans[l]['Subsidized'])
+        text_loans[l]['Unsubsidized'] = "$" + place_value(text_loans[l]['Unsubsidized'])
+        text_loans[l]['Private'] = "$" + place_value(text_loans[l]['Private'])
+
+    return [loans, text_loans]
 
 def open_chrome():
     opts = Options()
@@ -125,7 +126,9 @@ def repayment_plan(browser, balance, percent, term, button, balance_input, perce
                                                                                     # scrape output
     WebDriverWait(browser, 10).until(text_to_change((By.XPATH, "//div[@class='calc-opt-card animated-left']/h4/span"), text_before))
     monthly = browser.find_element_by_xpath("//div[@class='calc-opt-card animated-left']/h4/span").text
+    monthly = int(monthly[1:].replace(',',''))
     interest = browser.find_element_by_xpath("//div[@class='calc-opt-card animated-right']/h4/span").text
+    interest = int(interest[1:].replace(',',''))
     return [monthly, interest]
 
 def open_income_based_calc(browser, plan):
