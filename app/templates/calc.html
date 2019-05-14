@@ -116,12 +116,11 @@
           </select>
           <small class="form-text text-muted">If you don't know your dependency status, check out https://studentaid.ed.gov/sa/fafsa/filling-out/dependency#dependency-questions.</small>
         </div>
-        <br>
         <button type="submit" class="btn btn-success">Submit</button>
       </form>
 
       <br>
-      <h3>Institutional Scores</h3>
+      <!-- <h3>Institutional Scores</h3>
       <p>Scores for your prospective university range from 0 to virtually any positive integer, and is categorized into zones based on factors including average default rates, debt held after graduation, cost of attendance, and debt-to-earnings ratio.
       <div class="container">
         <div class="row">
@@ -155,23 +154,30 @@
         </div>
       </div>
 
-      <br>
+      <br> -->
 
-      {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-        <p class="lead"> {{ message }} </p>
-        {% endfor %}
+      {% if loans_length > 0 %}
+        <table class="table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Direct Subsidized Loans</th>
+            <th>Direct Unsubsidized Loans</th>
+            <th>Private Loans</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for key, value in loans.items() %}
+            <tr>
+              <th scope="row">{{ key+1 }}</th>
+              <td>{{ value['Subsidized'] }}</td>
+              <td>{{ value['Unsubsidized'] }}</td>
+              <td>{{ value['Private'] }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+        </table>
       {% endif %}
-      {% endwith %}
-
-
-      {% for key, value in dist.items() %}
-        <div class="row">
-          <dt class="col-6 text-right">{{ key }}</dt>
-          <dd class="col-6">{{ value }}</dd>
-        </div>
-      {% endfor %}
 
       <hr>
     </main><!-- /.container -->

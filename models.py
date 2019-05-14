@@ -28,6 +28,9 @@ class text_to_change(object):
         actual_text = _find_element(driver, self.locator).text
         return actual_text != self.text
 
+def place_value(number):
+    return ("{:,}".format(number))
+
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
@@ -86,6 +89,11 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
         if unsub_max < unsub_yearly_max[loan_index]:
             unsub_yearly_max[loan_index] = unsub_max
 
+    for l in loans:
+        loans[l]['Subsidized'] = "$" + place_value(loans[l]['Subsidized'])
+        loans[l]['Unsubsidized'] = "$" + place_value(loans[l]['Unsubsidized'])
+        loans[l]['Private'] = "$" + place_value(loans[l]['Private'])
+
     return loans
 
 def open_chrome():
@@ -134,19 +142,6 @@ def open_income_based_calc(browser, plan):
     interest_rate = browser.find_element_by_xpath("//input[@data-field='rate']")
     return [browser, income, family_size, income_growth_rate, old_loans, total_debt, monthly_payment, interest_rate, plan]
 
-def open_paye_calc(browser, plan):
-    sites = {'paye': 'https://studentloanhero.com/calculators/pay-as-you-earn-calculator/',
-                'repaye': 'https://studentloanhero.com/calculators/student-loan-revised-pay-as-you-earn-calculator/'}
-    browser.get(sites[plan])
-    income = browser.find_element_by_xpath("//input[@data-field='agi']")
-    dropdown = browser.find_elements_by_xpath('//div[@class="dropdown btn-group"]')
-    family_size = dropdown[0]
-    income_growth_rate = browser.find_element_by_xpath("//input[@data-field='ibr_aig']")
-    total_debt = browser.find_element_by_xpath("//input[@data-field='total_debt']")
-    monthly_payment = browser.find_element_by_xpath("//input[@data-field='monthly_payment']")
-    interest_rate = browser.find_element_by_xpath("//input[@data-field='rate']")
-    return [browser, income, family_size, income_growth_rate, total_debt, monthly_payment, interest_rate, plan]
-
 def income_based_plan(browser, income, family_size, income_growth_rate, old_loans, total_debt, monthly_payment, interest_rate,
                         income_input, family_size_input, income_growth_rate_input, total_debt_input, monthly_payment_input, interest_rate_input, plan):
     length = len(income.get_attribute('value'))                                     # clear values
@@ -179,6 +174,19 @@ def income_based_plan(browser, income, family_size, income_growth_rate, old_loan
     split_values = [['-', 'Original', plan.upper(), 'Savings']] + split_values[:5]
     return split_values
 
+def open_paye_calc(browser, plan):
+    sites = {'paye': 'https://studentloanhero.com/calculators/pay-as-you-earn-calculator/',
+                'repaye': 'https://studentloanhero.com/calculators/student-loan-revised-pay-as-you-earn-calculator/'}
+    browser.get(sites[plan])
+    income = browser.find_element_by_xpath("//input[@data-field='agi']")
+    dropdown = browser.find_elements_by_xpath('//div[@class="dropdown btn-group"]')
+    family_size = dropdown[0]
+    income_growth_rate = browser.find_element_by_xpath("//input[@data-field='ibr_aig']")
+    total_debt = browser.find_element_by_xpath("//input[@data-field='total_debt']")
+    monthly_payment = browser.find_element_by_xpath("//input[@data-field='monthly_payment']")
+    interest_rate = browser.find_element_by_xpath("//input[@data-field='rate']")
+    return [browser, income, family_size, income_growth_rate, total_debt, monthly_payment, interest_rate, plan]
+
 def paye_plan(browser, income, family_size, income_growth_rate, total_debt, monthly_payment, interest_rate,
                 income_input, family_size_input, income_growth_rate_input, total_debt_input, monthly_payment_input, interest_rate_input, plan):
     length = len(income.get_attribute('value'))                                     # clear values
@@ -209,7 +217,7 @@ def paye_plan(browser, income, family_size, income_growth_rate, total_debt, mont
     split_values = [['-', 'Original', plan.upper(), 'Savings']] + split_values[:5]
     return split_values
 
-browser = open_chrome()
+# browser = open_chrome()
 
 # inputs = open_loan_payment_calc(browser)
 # payments = repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], 10000, 5.05, 10, '$0')
@@ -220,8 +228,8 @@ browser = open_chrome()
 # inputs = open_income_based_calc(browser, 'paye')
 # info = income_based_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7], 74000, 4, 2, 180000, 1000, 5.05, inputs[8])
 
-inputs = open_paye_calc(browser, 'repaye')
-info = paye_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], 74000, 4, 2, 180000, 1000, 5.05, inputs[7])
-
-for value in info:
-    print(value)
+# inputs = open_paye_calc(browser, 'repaye')
+# info = paye_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], 74000, 4, 2, 180000, 1000, 5.05, inputs[7])
+#
+# for value in info:
+#     print(value)
