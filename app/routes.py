@@ -77,9 +77,11 @@ def calc():
         dependency=request.form['dependency']
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
+
     loans = {}
-    loans_length = len(loans)
-    ibr_info, icr_info, paye_info, repaye_info = [0]*4
+    if not len(loans) > 0:
+        loans_length = len(loans)
+        ibr_info, icr_info, paye_info, repaye_info = [0]*4
 
     if form.validate_on_submit():
         all_loans = models.loan_division((expected-actual), eligibility, college_term, dependency)
@@ -105,7 +107,8 @@ def calc():
         inputs = models.open_paye_calc(browser, 'repaye')
         repaye_info = models.paye_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6],
                         personal_income, family_size, 2, federal_loans[2], federal_loans[0], 5.05, inputs[7])
-                        
+        browser.close()
+
         for info in [ibr_info, icr_info, paye_info, repaye_info]:
             for i in info:
                 print(i)

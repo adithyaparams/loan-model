@@ -201,6 +201,23 @@
         </tbody>
         </table>
 
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-secondary active">
+            <input type="radio" name="options" id="option1" autocomplete="off" checked> Income-Based Repayment Plan
+          </label>
+          <label class="btn btn-secondary">
+            <input type="radio" name="options" id="option2" autocomplete="off"> Income-Contingent Repayment Plan
+          </label>
+          <label class="btn btn-secondary">
+            <input type="radio" name="options" id="option3" autocomplete="off"> Pay as you Earn Plan
+          </label>
+          <label class="btn btn-secondary">
+            <input type="radio" name="options" id="option3" autocomplete="off"> Revised Pay as you Earn Plan
+          </label>
+        </div>
+
+        <br /><br />
+
         {% for plan in [ibr_info, icr_info, paye_info, repaye_info] %}
           <table class="table">
           <thead>
