@@ -101,7 +101,11 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
 def open_chrome():
     opts = Options()
     # opts.add_argument('headless')
-    browser = Chrome(os.path.join(os.getcwd(),'chromedriver'), options=opts)
+    chrome_options = Options()
+    chrome_options.binary_location = GOOGLE_CHROME_BIN
+    chrome_options.add_argument('--disable-gpu')
+    chrome_options.add_argument('--no-sandbox')
+    browser = Chrome(executable_path=CHROMEDRIVER_PATH), options=opts, chrome_options=chrome_options)
     return browser
 
 def open_loan_payment_calc(browser):
