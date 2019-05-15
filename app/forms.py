@@ -11,7 +11,6 @@ class LoanForm(FlaskForm):
     family = IntegerField('family', validators=[DataRequired()])
     race = StringField('race', validators=[DataRequired()])
     dependency = StringField('dependency', validators=[DataRequired()])
-    income = IntegerField('income', validators=[DataRequired()])
     cost = IntegerField('cost of attendance', validators=[DataRequired()])
     expected = IntegerField('estimated family contribution', validators=[DataRequired()])
     actual = IntegerField('real family contribution', validators=[DataRequired()])

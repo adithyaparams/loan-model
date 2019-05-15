@@ -68,7 +68,6 @@ def calc():
     if request.method == 'POST':
         institution=request.form['institution']
         career=request.form['career']
-        income=request.form['income']
         race=request.form['race']
         gender=request.form['gender']
         eligibility=request.form['eligibility']
@@ -90,7 +89,7 @@ def calc():
         ibr_info, icr_info, paye_info, repaye_info = [0]*4
 
     if form.validate_on_submit():
-        all_loans = models.loan_division((expected-actual), eligibility, college_term, dependency)
+        all_loans = models.loan_division(actual, eligibility, college_term, dependency)
         loans = all_loans[1]
         loans_length = len(loans)
 

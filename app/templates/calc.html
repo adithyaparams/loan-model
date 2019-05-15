@@ -62,13 +62,6 @@
           {% endfor %}
         </div>
         <div class="form-group">
-          <label for="income">Household Income</label>
-          <input type="number" class="form-control" id="income" name="income" placeholder="Family Income">
-          {% for error in form.income.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-        </div>
-        <div class="form-group">
           <label for="race">Race</label>
           <select type="text" class="form-control" id="race" name="race" placeholder="Ethnicity">
             <option>White</option>
@@ -95,7 +88,7 @@
         </div>
         <div class="form-group">
           <label for="term">College Term</label>
-          <input type="number" class="form-control" id="term" name="term" placeholder="How long do you think you will be in college?">
+          <input type="number" class="form-control" id="term" name="term" placeholder="How many years do you think you will be in college?">
           {% for error in form.term.errors %}
             <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
@@ -109,7 +102,7 @@
         </div>
         <div class="form-group">
           <label for="cost">Cost of Attendance</label>
-          <input type="number" class="form-control" id="cost" name="cost" placeholder="Annual Cost">
+          <input type="number" class="form-control" id="cost" name="cost" placeholder="How much does your college cost per year?">
           {% for error in form.cost.errors %}
             <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
@@ -123,8 +116,8 @@
           {% endfor %}
         </div>
         <div class="form-group">
-          <label for="actual">Real Family Contribution</label>
-          <input type="number" class="form-control" id="actual" name="actual" placeholder="Calculated family contribution">
+          <label for="actual">Loan Burden</label>
+          <input type="number" class="form-control" id="actual" name="actual" placeholder="How much do you think you'll be taking out in loans each year, to match your EFC?">
           {% for error in form.actual.errors %}
             <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
@@ -140,7 +133,7 @@
         <button type="submit" class="btn btn-success">Submit</button>
       </form>
 
-      <br /> <hr> <br />
+      <br />
 
       <!-- <h3>Institutional Scores</h3>
       <p>Scores for your prospective university range from 0 to virtually any positive integer, and is categorized into zones based on factors including average default rates, debt held after graduation, cost of attendance, and debt-to-earnings ratio.
@@ -179,9 +172,10 @@
       <br> -->
 
 
-      <h2>Loan Distribution</h2>
-      <p>Suggested loan burdens are displayed across federal and private options, by the year that the debt is taken on.</p>
       {% if loans_length > 0 %}
+        <hr> <br />
+        <h2>Loan Distribution</h2>
+        <p>Suggested loan burdens are displayed across federal and private options, by the year that the debt is taken on.</p>
         <table class="table">
         <thead>
           <tr>
@@ -259,17 +253,18 @@
           </tbody>
           </table>
         {% endfor %}
+
+        <main role="main" class="container">
+          <div class="jumbotron">
+            <h1>Repayment Plan Options</h1>
+            <p class="lead">Learn about the pros and cons of various federal repayment plans.</p>
+            <a class="btn btn-lg btn-primary" href={{ url_for('types') }} role="button">Discover repayment options &raquo;</a>
+          </div>
+        </main>
       {% endif %}
 
       <!-- <div class="col-xs-12" style="height:15px;"></div> -->
 
-      <main role="main" class="container">
-        <div class="jumbotron">
-          <h1>Repayment Plan Options</h1>
-          <p class="lead">Learn about the pros and cons of various federal repayment plans.</p>
-          <a class="btn btn-lg btn-primary" href={{ url_for('types') }} role="button">Discover repayment options &raquo;</a>
-        </div>
-      </main>
 
       <hr>
     </main><!-- /.container -->
