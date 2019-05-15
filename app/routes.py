@@ -78,6 +78,9 @@ def calc():
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
 
+
+    plans = {'IBR':'Income-Based Repayment (IBR) Plan', 'ICR':'Income-Contingent Repayment (ICR) Plan',
+                'PAYE':'Pay As You Earn (PAYE) Plan', 'REPAYE':'Revised Pay As You Earn (REPAYE) Plan'}
     loans = {}
     if not len(loans) > 0:
         loans_length = len(loans)
@@ -109,9 +112,5 @@ def calc():
                         personal_income, family_size, 2, federal_loans[2], federal_loans[0], 5.05, inputs[7])
         browser.close()
 
-        for info in [ibr_info, icr_info, paye_info, repaye_info]:
-            for i in info:
-                print(i)
-
-    return render_template('calc.html', form=form, loans=loans, ibr_info=ibr_info, icr_info=icr_info,
+    return render_template('calc.html', form=form, plans=plans, loans=loans, ibr_info=ibr_info, icr_info=icr_info,
                                 paye_info=paye_info, repaye_info=repaye_info, loans_length=loans_length)

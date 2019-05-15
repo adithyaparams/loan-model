@@ -179,7 +179,6 @@ def income_based_plan(browser, income, family_size, income_growth_rate, old_loan
     for x in tuple_values:
         split_values.append(list(x))
     split_values = [['', 'Original', plan.upper(), 'Savings']] + split_values[:5]
-    print(split_values, file=sys.stderr)
     split_values[1][0] = 'Monthly payments'
     return split_values
 

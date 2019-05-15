@@ -44,7 +44,6 @@
 
     <main role="main" class="container">
       <h1>Student Debt Calculator</h1>
-      <br>
       <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <div class="form-group">
@@ -141,7 +140,7 @@
         <button type="submit" class="btn btn-success">Submit</button>
       </form>
 
-      <br>
+      <br /> <hr> <br />
 
       <!-- <h3>Institutional Scores</h3>
       <p>Scores for your prospective university range from 0 to virtually any positive integer, and is categorized into zones based on factors including average default rates, debt held after graduation, cost of attendance, and debt-to-earnings ratio.
@@ -179,6 +178,9 @@
 
       <br> -->
 
+
+      <h2>Loan Distribution</h2>
+      <p>Suggested loan burdens are displayed across federal and private options, by the year that the debt is taken on.</p>
       {% if loans_length > 0 %}
         <table class="table">
         <thead>
@@ -201,24 +203,13 @@
         </tbody>
         </table>
 
-        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-          <label class="btn btn-secondary active">
-            <input type="radio" name="options" id="option1" autocomplete="off" checked> Income-Based Repayment Plan
-          </label>
-          <label class="btn btn-secondary">
-            <input type="radio" name="options" id="option2" autocomplete="off"> Income-Contingent Repayment Plan
-          </label>
-          <label class="btn btn-secondary">
-            <input type="radio" name="options" id="option3" autocomplete="off"> Pay as you Earn Plan
-          </label>
-          <label class="btn btn-secondary">
-            <input type="radio" name="options" id="option3" autocomplete="off"> Revised Pay as you Earn Plan
-          </label>
-        </div>
+        <br />
 
-        <br /><br />
+        <h2>Alternative Repayment Plans</h2>
+        <p>The US government sponsors a variety of alternative repayment plans for federal loans that can lighten the monthly debt burden and, sometimes, even offer debt forgiveness. To learn more about various loan options, visit our Variations page, and finish your FAFSA to discover your eligibility for these plans.</p>
 
         {% for plan in [ibr_info, icr_info, paye_info, repaye_info] %}
+          <h3>{{plans[plan[0][2]]}}</h3>
           <table class="table">
           <thead>
             <tr>
@@ -233,14 +224,23 @@
                 <th scope="row">{{ plan[index][0] }}</th>
                 <td>{{ plan[index][1] }}</td>
                 <td>{{ plan[index][2] }}</td>
-                <td>{{ plan[index][3] }}</td>
+                <td><span style="color: green; font-weight: bold;">{{ plan[index][3] }}</span></td>
               </tr>
             {% endfor %}
           </tbody>
           </table>
         {% endfor %}
-
       {% endif %}
+
+      <div class="col-xs-12" style="height:15px;"></div>
+
+      <main role="main" class="container">
+        <div class="jumbotron">
+          <h1>Repayment Plan Options</h1>
+          <p class="lead">Learn about the pros and cons of various federal repayment plans.</p>
+          <a class="btn btn-lg btn-primary" href={{ url_for('types') }} role="button">Discover repayment options &raquo;</a>
+        </div>
+      </main>
 
       <hr>
     </main><!-- /.container -->
