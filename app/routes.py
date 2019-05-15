@@ -24,6 +24,9 @@ def personal_score(collegeScore, career, income, race, gender, efc):
     realIncome = personalIncome * variations[race][gender]
     income = int(income)
 
+def place_value(number):
+    return ("{:,}".format(number))
+
 def consolidate_debt(loan_dist, type, browser, inputs):
     payments = [0,0]
     monthly = 0
@@ -78,7 +81,7 @@ def calc():
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
 
-
+    total = []
     plans = {'IBR':'Income-Based Repayment (IBR) Plan', 'ICR':'Income-Contingent Repayment (ICR) Plan',
                 'PAYE':'Pay As You Earn (PAYE) Plan', 'REPAYE':'Revised Pay As You Earn (REPAYE) Plan'}
     loans = {}
@@ -96,6 +99,9 @@ def calc():
         federal_loans = consolidate_debt(all_loans[0], 'federal', browser, inputs)
         private_loans = consolidate_debt(all_loans[0], 'private', browser, inputs)
         total = list(map(add, federal_loans, private_loans))
+        total[0] = '$' + place_value(total[0])
+        total[1] = '$' + place_value(total[1])
+        total[2] = '$' + place_value(total[2])
 
         personal_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
         inputs = models.open_income_based_calc(browser, 'ibr')
@@ -112,5 +118,5 @@ def calc():
                         personal_income, family_size, 2, federal_loans[2], federal_loans[0], 5.05, inputs[7])
         browser.close()
 
-    return render_template('calc.html', form=form, plans=plans, loans=loans, ibr_info=ibr_info, icr_info=icr_info,
+    return render_template('calc.html', form=form, plans=plans, total=total, loans=loans, ibr_info=ibr_info, icr_info=icr_info,
                                 paye_info=paye_info, repaye_info=repaye_info, loans_length=loans_length)

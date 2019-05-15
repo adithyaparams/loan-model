@@ -203,7 +203,36 @@
         </tbody>
         </table>
 
-        <br />
+        <!-- <div class="col-xs-12" style="height:15px;"></div> -->
+
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title text-center text-center">Monthly Payments</h5>
+                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[0] }}</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title text-center">Total Interest</h5>
+                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[1] }}</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title text-center">Total Loan Burden</h5>
+                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[2] }}</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xs-12" style="height:30px;"></div>
 
         <h2>Alternative Repayment Plans</h2>
         <p>The US government sponsors a variety of alternative repayment plans for federal loans that can lighten the monthly debt burden and, sometimes, even offer debt forgiveness. To learn more about various loan options, visit our Variations page, and finish your FAFSA to discover your eligibility for these plans.</p>
@@ -232,7 +261,7 @@
         {% endfor %}
       {% endif %}
 
-      <div class="col-xs-12" style="height:15px;"></div>
+      <!-- <div class="col-xs-12" style="height:15px;"></div> -->
 
       <main role="main" class="container">
         <div class="jumbotron">
