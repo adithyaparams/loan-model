@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, request
-from app import app, ge, scorecard, occupation
+from app import app, occupation
 from app.forms import LoanForm
 import pandas as pd
 from operator import add
@@ -14,40 +14,17 @@ def college_score(institution):
     averageCost = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['COSTT4_A']) #64400
     medianDebt = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['GRAD_DEBT_MDN']) #6100
 
-def personal_score(collegeScore, career, income, race, gender, efc):
-    personalIncome = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
-    variations = {'White':{'Male':1.11945,'Female':0.922821},
-                    'African American':{'Male':0.838333,'Female':0.756954},
-                    'Asian':{'Male':1.428603,'Female':1.102105},
-                    'Hispanic':{'Male':0.796935,'Female':0.704974},
-                    'Other':{'Male':1,'Female':0.8}}
-    realIncome = personalIncome * variations[race][gender]
-    income = int(income)
+def min_max_discretionary(income_dist, family, monthly):
+    elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
+    print(income_dist[0], income_dist[9], family, file=sys.stderr)
+    min = monthly*12/(income_dist[0] - elev_pov_line[family-1])
+    max = monthly*12/(income_dist[9] - elev_pov_line[family-1])
+    return [int(max*100), int(min*100)]
+
+
 
 def place_value(number):
     return ("{:,}".format(number))
-
-def consolidate_debt(loan_dist, type, browser, inputs):
-    payments = [0,0]
-    monthly = 0
-    total_interest = 0
-    balance = 0
-    for key, loans in loan_dist.items():
-        if type == 'federal':
-            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Subsidized'], 5.05, 10, payments[0])
-            monthly += payments[0]
-            total_interest += payments[1]
-            balance += loans['Subsidized']
-            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Unsubsidized'], 5.05, 10, payments[0])
-            monthly += payments[0]
-            total_interest += payments[1]
-            balance += loans['Unsubsidized']
-        if type == 'private':
-            payments = models.repayment_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], loans['Private'], 7, 10, payments[0])
-            monthly += payments[0]
-            total_interest += payments[1]
-            balance += loans['Private']
-    return [monthly, total_interest, balance]
 
 @app.route('/')
 @app.route('/index')
@@ -80,10 +57,12 @@ def calc():
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
 
-    total = []
+    total = ['']*3
     plans = {'IBR':'Income-Based Repayment (IBR) Plan', 'ICR':'Income-Contingent Repayment (ICR) Plan',
                 'PAYE':'Pay As You Earn (PAYE) Plan', 'REPAYE':'Revised Pay As You Earn (REPAYE) Plan'}
     loans = {}
+    pct_range = []
+    pct_range_text = ''
     if not len(loans) > 0:
         loans_length = len(loans)
         ibr_info, icr_info, paye_info, repaye_info = [0]*4
@@ -93,29 +72,17 @@ def calc():
         loans = all_loans[1]
         loans_length = len(loans)
 
-        browser = models.open_chrome()
-        inputs = models.open_loan_payment_calc(browser)
-        federal_loans = consolidate_debt(all_loans[0], 'federal', browser, inputs)
-        private_loans = consolidate_debt(all_loans[0], 'private', browser, inputs)
-        total = list(map(add, federal_loans, private_loans))
-        total[0] = '$' + place_value(total[0])
-        total[1] = '$' + place_value(total[1])
-        total[2] = '$' + place_value(total[2])
+        federal_loans = models.consolidate_debt(all_loans[0], 'federal')
+        private_loans = models.consolidate_debt(all_loans[0], 'private')
+        total_num = list(map(add, federal_loans, private_loans))
+        total[0] = '$' + place_value(total_num[0])
+        total[1] = '$' + place_value(total_num[1])
+        total[2] = '$' + place_value(total_num[2])
 
-        personal_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
-        inputs = models.open_income_based_calc(browser, 'ibr')
-        ibr_info = models.income_based_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7],
-                                        personal_income, family_size, 3, federal_loans[2], federal_loans[0], 5.05, inputs[8])
-        inputs = models.open_income_based_calc(browser, 'icr')
-        icr_info = models.income_based_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6], inputs[7],
-                                        personal_income, family_size, 3, federal_loans[2], federal_loans[0], 5.05, inputs[8])
-        inputs = models.open_paye_calc(browser, 'paye')
-        paye_info = models.paye_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6],
-                            personal_income, family_size, 2, federal_loans[2], federal_loans[0], 5.05, inputs[7])
-        inputs = models.open_paye_calc(browser, 'repaye')
-        repaye_info = models.paye_plan(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4], inputs[5], inputs[6],
-                        personal_income, family_size, 2, federal_loans[2], federal_loans[0], 5.05, inputs[7])
-        browser.close()
+        occupation_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
+        incomes = models.salary_proj(occupation_income, gender, race)
+        pct_range = min_max_discretionary(incomes, family_size, total_num[0])
+        pct_range_text = str(pct_range[0]) + "% - " + str(pct_range[1]) + "%"
 
-    return render_template('calc.html', form=form, plans=plans, total=total, loans=loans, ibr_info=ibr_info, icr_info=icr_info,
-                                paye_info=paye_info, repaye_info=repaye_info, loans_length=loans_length)
+    return render_template('calc.html', form=form, plans=plans, total=total, loans=loans,
+                                pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)
