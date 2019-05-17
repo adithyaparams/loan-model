@@ -100,7 +100,7 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
 
 def open_chrome():
     opts = Options()
-    opts.add_argument('headless')
+    # opts.add_argument('headless')
     chrome_options = Options()
     chrome_options.binary_location = os.environ['GOOGLE_CHROME_BIN']
     chrome_options.add_argument('--disable-gpu')
