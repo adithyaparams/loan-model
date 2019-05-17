@@ -3,17 +3,6 @@ from sympy import Symbol
 import os, itertools, copy
 import sys
 
-def salary_proj(avg):
-    r = 0.004
-    multiplier = 1.1
-    start = 0.7*avg
-    s_max = multiplier * float(avg)
-    out = []
-    for t in range(0, 31):
-        denom = 1.00 + (s_max / (float(start) - 1))**(-r*s_max*t)
-        out.append(s_max/denom)
-    return out
-
 class text_to_change(object):
     def __init__(self, locator, text):
         self.locator = locator
@@ -92,23 +81,23 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
 
     return [loans, text_loans]
 
-def consolidate_debt(loan_dist, type):
+def consolidate_debt(loan_dist, type, term=10):
     payments = [0,0]
     monthly = 0
     total_interest = 0
     balance = 0
     for key, loans in loan_dist.items():
         if type == 'federal':
-            payments = repayment_plan(loans['Subsidized'], .0505, 10)
+            payments = repayment_plan(loans['Subsidized'], .0505, term)
             monthly += payments[0]
             total_interest += payments[1]
             balance += payments[2]
-            payments = repayment_plan(loans['Unsubsidized'], .0505, 10)
+            payments = repayment_plan(loans['Unsubsidized'], .0505, term)
             monthly += payments[0]
             total_interest += payments[1]
             balance += payments[2]
         if type == 'private':
-            payments = repayment_plan(loans['Private'], .07, 10)
+            payments = repayment_plan(loans['Private'], .07, term)
             monthly += payments[0]
             total_interest += payments[1]
             balance += payments[2]

@@ -21,10 +21,34 @@ def min_max_discretionary(income_dist, family, monthly):
     max = monthly*12/(income_dist[9] - elev_pov_line[family-1])
     return [int(max*100), int(min*100)]
 
-
-
 def place_value(number):
     return ("{:,}".format(number))
+
+def stringify(num):
+    return '$' + place_value(int(num))
+
+def extended_loans(standard_loans, loan_dist):
+    table = []
+    eloans = models.consolidate_debt(loan_dist, 'federal', 20)
+    table.append(['', 'Standard', 'Extended', 'Savings'])
+    table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(eloans[0]), stringify(-eloans[0]+standard_loans[0])])
+    table.append(['Total Balance', stringify(standard_loans[2]), stringify(eloans[2]), stringify(-eloans[2]+standard_loans[2])])
+    table.append(['Debt Forgiveness', '$0', '$0', '$0'])
+    table.append(['Repayment Period', '~10yrs', '~20yrs', '-10yrs'])
+    return table
+
+def icr_loans(standard_loans, loan_dist, income, family):
+    elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
+    table = []
+    eloans = models.consolidate_debt(loan_dist, 'federal', 20)
+    table.append(['', 'Standard', 'ICD', 'Savings'])
+    icr_monthly = (income-elev_pov_line[family])/12*.2
+    table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(icr_monthly), stringify(-eloans[0]+icr_monthly)])
+    table.append(['Total Balance', stringify(standard_loans[2]), stringify(eloans[2]), stringify(-eloans[2]+standard_loans[2])])
+    diff = eloans[2]-240*icr_monthly
+    table.append(['Debt Forgiveness', '$0', stringify(diff), stringify(diff)])
+    table.append(['Repayment Period', '~10yrs', '~20yrs', '-10yrs'])
+    return table
 
 @app.route('/')
 @app.route('/index')
@@ -58,19 +82,22 @@ def calc():
         eligibility = True if eligibility == 'Eligible' else False
 
     total = ['']*3
-    plans = {'IBR':'Income-Based Repayment (IBR) Plan', 'ICR':'Income-Contingent Repayment (ICR) Plan',
-                'PAYE':'Pay As You Earn (PAYE) Plan', 'REPAYE':'Revised Pay As You Earn (REPAYE) Plan'}
-    loans = {}
+    plans = {'Extended':'Extended Repayment Plan', 'ICD':'Income-Driven Repayment (ICD) Plans'}
+    desc = {'Extended':'If you need to make lower monthly payments over a longer period of time than under \
+                plans such as the Standard Repayment Plan, then the Extended Repayment Plan may be right for you.',
+                'ICD':'An income-driven repayment plan sets your monthly student loan payment at an amount that \
+                is intended to be affordable based on your income and family size.'}
+    text_loans = {}
     pct_range = []
     pct_range_text = ''
-    if not len(loans) > 0:
-        loans_length = len(loans)
-        ibr_info, icr_info, paye_info, repaye_info = [0]*4
+    if not len(text_loans) > 0:
+        loans_length = len(text_loans)
+        extended, icr = [0]*2
 
     if form.validate_on_submit():
         all_loans = models.loan_division(actual, eligibility, college_term, dependency)
-        loans = all_loans[1]
-        loans_length = len(loans)
+        text_loans = all_loans[1]
+        loans_length = len(text_loans)
 
         federal_loans = models.consolidate_debt(all_loans[0], 'federal')
         private_loans = models.consolidate_debt(all_loans[0], 'private')
@@ -84,5 +111,8 @@ def calc():
         pct_range = min_max_discretionary(incomes, family_size, total_num[0])
         pct_range_text = str(pct_range[0]) + "% - " + str(pct_range[1]) + "%"
 
-    return render_template('calc.html', form=form, plans=plans, total=total, loans=loans,
+        extended = extended_loans(federal_loans, all_loans[0])
+        icr = icr_loans(federal_loans, all_loans[0], occupation_income, family_size)
+
+    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, icr=icr, desc=desc,
                                 pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)

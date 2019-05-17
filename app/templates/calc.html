@@ -181,8 +181,8 @@
         <thead>
           <tr>
             <th>Year</th>
-            <th>Direct Subsidized Loans</th>
-            <th>Direct Unsubsidized Loans</th>
+            <th>Stafford Subsidized Loans</th>
+            <th>Stafford Unsubsidized Loans</th>
             <th>Private Loans</th>
           </tr>
         </thead>
@@ -197,7 +197,6 @@
           {% endfor %}
         </tbody>
         </table>
-
 
         <div class="col-xs-12" style="height:8px;"></div>
         <h2>Standard Repayment Plan</h2>
@@ -244,12 +243,36 @@
           <p class="font-weight-bold font-italic"> While at the beginning of your career, your monthly disposable income seems to be too low to safely complete monthly payments, you reach a level of safety as your career progresses and income increases. Consider exploring some of the Income-Driven Repayment Plans, listed below, as an alternative for the fixed payments offered by the Standard Plan. </p>
         {% endif %}
 
+        <p class="font-weight-light">*Under the Public Service Loan Forgiveness (PSLF) program, employees of a government or non-profit organization can receive loan forgiveness on their remaining balance after having made 10 years of qualifying monthly payments. </p>
+
         <div class="col-xs-12" style="height:12px;"></div>
 
         <h2>Alternative Repayment Plans</h2>
         <p>The US government sponsors a variety of alternative repayment plans for federal loans that can lighten the monthly debt burden and, sometimes, even offer debt forgiveness. To learn more about various loan options, visit our Variations page, and finish your FAFSA to discover your eligibility for these plans.</p>
 
-
+        {% for plan in [extended, icr] %}
+          <h3>{{plans[plan[0][2]]}}</h3>
+          <p>{{desc[plan[0][2]]}}</p>
+          <table class="table">
+          <thead>
+            <tr>
+              {% for title in plan[0]: %}
+                <th>{{ title }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for index in [1,2,3,4] %}
+              <tr>
+                <th scope="row">{{ plan[index][0] }}</th>
+                <td>{{ plan[index][1] }}</td>
+                <td>{{ plan[index][2] }}</td>
+                <td><span style="color: green; font-weight: bold;">{{ plan[index][3] }}</span></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+          </table>
+        {% endfor %}
 
         <main role="main" class="container">
           <div class="jumbotron">
