@@ -173,7 +173,8 @@
 
 
       {% if loans_length > 0 %}
-        <hr> <br />
+        <hr>
+        <div class="col-xs-12" style="height:10px;"></div>
         <h2>Loan Distribution</h2>
         <p>Suggested loan burdens are displayed across federal and private options, by the year that the debt is taken on.</p>
         <table class="table">
@@ -197,8 +198,10 @@
         </tbody>
         </table>
 
-        <!-- <div class="col-xs-12" style="height:15px;"></div> -->
 
+        <div class="col-xs-12" style="height:8px;"></div>
+        <h2>Standard Repayment Plan</h2>
+        <p>The standard repayment plan is the most basic federal and private loan management plan, involving fixed monthly payments that guarantee the loan is paid off after 10 years. The basics of what your plan would like, based on the annual loan burden you identified and prospective distribution of federal and private loans we recommend, are displayed below.</p>
         <div class="row">
           <div class="col-sm-4">
             <div class="card">
@@ -228,31 +231,25 @@
 
         <div class="col-xs-12" style="height:30px;"></div>
 
+        <h2>Your Plan's Practicality</h2>
+        <p>One of the biggest issues behind the student loan debt crisis is that borrowers overestimate how much loans they should be taking on. Falling behind on monthly payments, especially with the standard plan, can lead to interest accumulating on top of unpaid interest rather than a decreasing principal, leaving you stuck footing a bigger bill. <span class="font-weight-bold"> Optimally, borrowers should be spending a maximum of 15% of their monthly discretionary income paying back student loans. </span> Given your prospective occupation and monthly payments rate under the standard plan, the percent of your monthly income that would go toward repaying student varies between </p>
+        {% if pct_range[0] > 15 %}
+          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #CC0000;">{{pct_range_text}}</span></p>
+          <p class="font-weight-bold font-italic"> Too much of your monthly disposable income is going toward paying off student loans, indicating that you may need to pursue a different career path. </p>
+        {% elif pct_range[1] < 15 %}
+          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #006600;">{{pct_range_text}}</span></p>
+          <p class="font-weight-bold font-italic"> The proportion of your monthly disposable income falls under 15%, indicating that you carry a 'safe' level of student debt and should be able to make all your payments. </p>
+        {% else %}
+          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #FFCD4A;">{{pct_range_text}}</span></p>
+          <p class="font-weight-bold font-italic"> While at the beginning of your career, your monthly disposable income seems to be too low to safely complete monthly payments, you reach a level of safety as your career progresses and income increases. Consider exploring some of the Income-Driven Repayment Plans, listed below, as an alternative for the fixed payments offered by the Standard Plan. </p>
+        {% endif %}
+
+        <div class="col-xs-12" style="height:12px;"></div>
+
         <h2>Alternative Repayment Plans</h2>
         <p>The US government sponsors a variety of alternative repayment plans for federal loans that can lighten the monthly debt burden and, sometimes, even offer debt forgiveness. To learn more about various loan options, visit our Variations page, and finish your FAFSA to discover your eligibility for these plans.</p>
 
-        {% for plan in [ibr_info, icr_info, paye_info, repaye_info] %}
-          <h3>{{plans[plan[0][2]]}}</h3>
-          <table class="table">
-          <thead>
-            <tr>
-              {% for title in plan[0]: %}
-                <th>{{ title }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody>
-            {% for index in [1,3,4,5] %}
-              <tr>
-                <th scope="row">{{ plan[index][0] }}</th>
-                <td>{{ plan[index][1] }}</td>
-                <td>{{ plan[index][2] }}</td>
-                <td><span style="color: green; font-weight: bold;">{{ plan[index][3] }}</span></td>
-              </tr>
-            {% endfor %}
-          </tbody>
-          </table>
-        {% endfor %}
+
 
         <main role="main" class="container">
           <div class="jumbotron">
