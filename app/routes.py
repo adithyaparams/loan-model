@@ -65,8 +65,6 @@ def calc():
         eligibility=request.form['eligibility']
         college_term=int(request.form['term'])
         family_size=int(request.form['family'])
-        cost=int(request.form['cost'])
-        expected=int(request.form['expected'])
         actual=int(request.form['actual'])
         dependency=request.form['dependency']
         dependency = True if dependency == 'Dependent' else False
