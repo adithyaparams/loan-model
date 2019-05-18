@@ -6,14 +6,6 @@ from operator import add
 import sys
 import models
 
-def college_score(institution):
-    debtToEarnings = pd.Series.item(ge[ge['Institution Name'] == institution.upper()]['Debt-to-Earnings Annual Rate']) #22.5
-
-    defaultRate = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['CDR3']) #.00699
-    federalLoanStudents = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['PCTFLOAN']) #.0355
-    averageCost = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['COSTT4_A']) #64400
-    medianDebt = pd.Series.item(scorecard[scorecard['INSTNM'] == institution]['GRAD_DEBT_MDN']) #6100
-
 def min_max_discretionary(income_dist, family, monthly):
     elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
     print(income_dist[0], income_dist[9], family, file=sys.stderr)
@@ -67,7 +59,6 @@ def types():
 def calc():
     form = LoanForm()
     if request.method == 'POST':
-        institution=request.form['institution']
         career=request.form['career']
         race=request.form['race']
         gender=request.form['gender']
