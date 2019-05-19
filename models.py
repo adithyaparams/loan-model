@@ -118,14 +118,15 @@ def repayment_plan(principal, rate, term=10):
     total = out*12*term
     return [int(monthly), int(interest), int(total)]
 
-def salary_proj(avg, gender, race, term=10):
+def salary_proj(avg, gender=1, race=1, term=10):
     variations = {'White':{'Male':1.11945,'Female':0.922821},
                   'African American':{'Male':0.838333,'Female':0.756954},
                   'Asian':{'Male':1.428603,'Female':1.102105},
                   'Hispanic':{'Male':0.796935,'Female':0.704974},
                   'Other':{'Male':1,'Female':0.8}}
     career = [0]*30
-    coef = variations[race][gender]
+    # coef = variations[race][gender]
+    coef = 1
     for i in range(5):
         career[i] = avg*(1/1.02)**(4-i)
     for i in range(5, 30):

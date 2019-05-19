@@ -42,6 +42,12 @@ def icr_loans(standard_loans, loan_dist, income, family):
     table.append(['Repayment Period', '~10yrs', '~20yrs', '-10yrs'])
     return table
 
+def career_list():
+    careers = pd.Series.tolist(occupation[occupation['OCC_GROUP'] == 'major']['OCC_TITLE'])
+    for minor in pd.Series.tolist(occupation[occupation['OCC_GROUP'] == 'minor']['OCC_TITLE']):
+        careers.append(minor)
+    return careers
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -60,10 +66,10 @@ def calc():
     form = LoanForm()
     if request.method == 'POST':
         career=request.form['career']
-        race=request.form['race']
-        gender=request.form['gender']
+        # race=request.form['race']
+        # gender=request.form['gender']
         eligibility=request.form['eligibility']
-        college_term=int(request.form['term'])
+        college_term=request.form['term']
         family_size=int(request.form['family'])
         actual=int(request.form['actual'])
         dependency=request.form['dependency']
@@ -82,8 +88,13 @@ def calc():
     if not len(text_loans) > 0:
         loans_length = len(text_loans)
         extended, icr = [0]*2
+    careers = career_list()
 
     if form.validate_on_submit():
+        college_term = int(college_term)
+        family_size=int(family_size)
+        actual=int(actual)
+
         all_loans = models.loan_division(actual, eligibility, college_term, dependency)
         text_loans = all_loans[1]
         loans_length = len(text_loans)
@@ -96,12 +107,13 @@ def calc():
         total[2] = '$' + place_value(total_num[2])
 
         occupation_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
-        incomes = models.salary_proj(occupation_income, gender, race)
+        # incomes = models.salary_proj(occupation_income, gender, race)
+        incomes = models.salary_proj(occupation_income)
         pct_range = min_max_discretionary(incomes, family_size, total_num[0])
         pct_range_text = str(pct_range[0]) + "% - " + str(pct_range[1]) + "%"
 
         extended = extended_loans(federal_loans, all_loans[0])
         icr = icr_loans(federal_loans, all_loans[0], occupation_income, family_size)
 
-    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, icr=icr, desc=desc,
-                                pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)
+    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, careers=careers,
+                                icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)

@@ -14,6 +14,8 @@
     <!-- Custom styles for this template -->
     <link href="../static/starter-template.css" rel="stylesheet">
     <link type="text/css" href="../static/grid.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/css/bootstrap-select.css">
+
   </head>
 
   <body>
@@ -44,17 +46,21 @@
 
     <main role="main" class="container">
       <h1>Student Debt Calculator</h1>
+      </br>
       <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <div class="form-group">
-          <label for="career">Prospective Career</label>
-          <input type="text" class="form-control" id="career" name="career" placeholder="Likely Career Path">
-          <small class="form-text text-muted">To view the range of prospective occupations, visit https://www.bls.gov/oes/current/oes_nat.htm.</small>
+          <label for="career">Enter and select a prospective career: &nbsp; </label>
+          <select data-live-search="true" type="text" class="selectpicker" id="career" name="career" placeholder="Likely Career Path" data-width="74%">
+            {% for c in careers %}
+                <option>{{ c }}</option>
+            {% endfor %}
+          </select>
           {% for error in form.career.errors %}
             <span style="color: red;">[{{ error }}]</span>
           {% endfor %}
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
           <label for="race">Race</label>
           <select type="text" class="form-control" id="race" name="race" placeholder="Ethnicity">
             <option>White</option>
@@ -70,39 +76,39 @@
             <option>Male</option>
             <option>Female</option>
           </select>
+        </div> -->
+        <div class="form-group">
+          <label for="term">How many years do you think you'll be in college?</label>
+          <input type="number" class="form-control" id="term" name="term" placeholder='College Term'>
+          {% for error in form.term.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
         </div>
         <div class="form-group">
-          <label for="eligibility">Subsidized Loan Eligibility</label>
-          <select type="text" class="form-control" id="eligibility" name="eligibility" placeholder="Enter loan eligibility status">
+          <label for="family">How large do you expect your family to become in the 10 years after graduating college?</label>
+          <input type="number" class="form-control" id="family" name="family" placeholder="Family Size">
+          {% for error in form.family.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="actual">How much do you expect to take out in loans each year?</label>
+          <input type="number" class="form-control" id="actual" name="actual" placeholder="Annual Loan Burden">
+          {% for error in form.actual.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="eligibility">Are you eligible for Stafford Subsidized Loans?</label>
+          <select type="text" class="form-control" id="eligibility" name="eligibility">
             <option>Eligible</option>
             <option>Ineligible</option>
           </select>
           <small class="form-text text-muted">To confirm your eligibility for Direct Subsidized loans, complete your FAFSA.</small>
         </div>
         <div class="form-group">
-          <label for="term">College Term</label>
-          <input type="number" class="form-control" id="term" name="term" placeholder="How many years do you think you will be in college?">
-          {% for error in form.term.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-        </div>
-        <div class="form-group">
-          <label for="family">Prospective Family Size</label>
-          <input type="number" class="form-control" id="family" name="family" placeholder="How big do you think your family will become as an adult?">
-          {% for error in form.family.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-        </div>
-        <div class="form-group">
-          <label for="actual">Loan Burden</label>
-          <input type="number" class="form-control" id="actual" name="actual" placeholder="How much do you think you'll be taking out in loans each year, to match your EFC?">
-          {% for error in form.actual.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-          {% endfor %}
-        </div>
-        <div class="form-group">
-          <label for="dependency">Dependency Status</label>
-          <select type="text" class="form-control" id="dependency" name="dependency" placeholder="Enter dependency status">
+          <label for="dependency">What is your current familial dependency status?</label>
+          <select type="text" class="form-control" id="dependency" name="dependency">
             <option>Dependent</option>
             <option>Independent</option>
           </select>
@@ -210,10 +216,10 @@
 
         <h2>Your Plan's Practicality</h2>
         <p>One of the biggest issues behind the student loan debt crisis is that borrowers overestimate how much loans they should be taking on. Falling behind on monthly payments, especially with the standard plan, can lead to interest accumulating on top of unpaid interest rather than a decreasing principal, leaving you stuck footing a bigger bill. <span class="font-weight-bold"> Optimally, borrowers should be spending a maximum of 15% of their monthly discretionary income paying back student loans. </span> Given your prospective occupation and monthly payments rate under the standard plan, the percent of your monthly income that would go toward repaying student varies between </p>
-        {% if pct_range[0] > 15 %}
+        {% if pct_range[0] > 10 %}
           <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #CC0000;">{{pct_range_text}}</span></p>
           <p class="font-weight-bold font-italic"> Too much of your monthly disposable income is going toward paying off student loans, indicating that you may need to pursue a different career path. </p>
-        {% elif pct_range[1] < 15 %}
+        {% elif pct_range[1] < 10 %}
           <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #006600;">{{pct_range_text}}</span></p>
           <p class="font-weight-bold font-italic"> The proportion of your monthly disposable income falls under 15%, indicating that you carry a 'safe' level of student debt and should be able to make all your payments. </p>
         {% else %}
@@ -274,9 +280,11 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/vendor/jquery-slim.min.js"><\/script>')</script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/vendor/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js" ></script>
+
   </body>
 </html>
