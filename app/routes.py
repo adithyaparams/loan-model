@@ -6,12 +6,14 @@ from operator import add
 import sys
 import models
 
+# global extended, icr
+
 def min_max_discretionary(income_dist, family, monthly):
     elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
     print(income_dist[0], income_dist[9], family, file=sys.stderr)
     min = monthly*12/(income_dist[0] - elev_pov_line[family-1])
     max = monthly*12/(income_dist[9] - elev_pov_line[family-1])
-    return [int(max*100), int(min*100)]
+    return [int(max*1000), int(min*1000)]
 
 def place_value(number):
     return ("{:,}".format(number))
@@ -48,13 +50,6 @@ def career_list():
         careers.append(minor)
     return careers
 
-@app.before_request
-def before_request():
-    if request.url.startswith('http://'):
-        url = request.url.replace('http://', 'https://', 1)
-        code = 301
-        return redirect(url, code=code)
-
 @app.route('/')
 @app.route('/index')
 def index():
@@ -71,7 +66,9 @@ def types():
 @app.route('/calc', methods=['GET', 'POST'])
 def calc():
     form = LoanForm()
-    if request.method == 'POST':
+    print(request.form, file=sys.stderr)
+    if 'submission' in request.form:
+        print(request.form, file=sys.stderr)
         career=request.form['career']
         # race=request.form['race']
         # gender=request.form['gender']
@@ -82,7 +79,14 @@ def calc():
         dependency=request.form['dependency']
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
+    # if 'extended' in request.form:
+    #     print('yesstended', file=sys.stderr)
+    #     plan = extended
+    # if 'icr' in request.form:
+    #     print('yecr', file=sys.stderr)
+    #     plan = icr
 
+    plan = []
     total = ['']*3
     plans = {'Extended':'Extended Repayment Plan', 'ICD':'Income-Driven Repayment (ICD) Plans'}
     desc = {'Extended':'If you need to make lower monthly payments over a longer period of time than under \
@@ -97,7 +101,7 @@ def calc():
         extended, icr = [0]*2
     careers = career_list()
 
-    if form.validate_on_submit():
+    if form.validate_on_submit() and 'submission' in request.form:
         college_term = int(college_term)
         family_size=int(family_size)
         actual=int(actual)
@@ -119,8 +123,10 @@ def calc():
         pct_range = min_max_discretionary(incomes, family_size, total_num[0])
         pct_range_text = str(pct_range[0]) + "% - " + str(pct_range[1]) + "%"
 
+        # global extended
         extended = extended_loans(federal_loans, all_loans[0])
+        # global icr
         icr = icr_loans(federal_loans, all_loans[0], occupation_income, family_size)
 
-    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, careers=careers,
+    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, careers=careers, plan=plan,
                                 icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)
