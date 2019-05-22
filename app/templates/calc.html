@@ -6,10 +6,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../static/favicon.ico">
+
     <title>LoanCalc</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
     <!-- Custom styles for this template -->
     <link href="../static/starter-template.css" rel="stylesheet">
@@ -45,7 +46,7 @@
     </nav>
 
     <main role="main" class="container">
-      <h1>Student Debt Calculator</h1>
+      <h1 style="font-weight: bold;">Student Debt Calculator</h1>
       </br>
       <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -57,7 +58,7 @@
             {% endfor %}
           </select>
           {% for error in form.career.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <span style="color: red;">{{ error }}</span>
           {% endfor %}
         </div>
         <!-- <div class="form-group">
@@ -81,21 +82,21 @@
           <label for="term">How many years do you think you'll be in college?</label>
           <input type="number" class="form-control" id="term" name="term" placeholder='College Term'>
           {% for error in form.term.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <span style="color: red;">{{ error }}</span>
           {% endfor %}
         </div>
         <div class="form-group">
           <label for="family">How large do you expect your family to become in the 10 years after graduating college?</label>
           <input type="number" class="form-control" id="family" name="family" placeholder="Family Size">
           {% for error in form.family.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <span style="color: red;">{{ error }}</span>
           {% endfor %}
         </div>
         <div class="form-group">
           <label for="actual">How much do you expect to take out in loans each year?</label>
           <input type="number" class="form-control" id="actual" name="actual" placeholder="Annual Loan Burden">
           {% for error in form.actual.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <span style="color: red;">{{ error }}</span>
           {% endfor %}
         </div>
         <div class="form-group">
@@ -119,171 +120,12 @@
 
       <br />
 
-      <!-- <h3>Institutional Scores</h3>
-      <p>Scores for your prospective university range from 0 to virtually any positive integer, and is categorized into zones based on factors including average default rates, debt held after graduation, cost of attendance, and debt-to-earnings ratio.
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3">
-            Green: 0-5
-          </div>
-          <div class="col-md-3 synopsis">
-            Yellow: 5-10
-          </div>
-          <div class="col-md-6">
-            Red: 10+
-          </div>
-        </div>
-      </div>
-
-      <br>
-
-      <h3>Personal Scores</h3>
-      <p>Scores for your own score also range from 0 to virtually any positive integer, and is categorized into zones based on factors including your institutional score, race, gender, household income, and prospective personal income.
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3">
-            Green: 0-9
-          </div>
-          <div class="col-md-3 synopsis">
-            Yellow: 9-15
-          </div>
-          <div class="col-md-6">
-            Red: 15+
-          </div>
-        </div>
-      </div>
-
-      <br> -->
-
-
-      {% if loans_length > 0 %}
-        <hr>
-        <div class="col-xs-12" style="height:10px;"></div>
-        <h2>Loan Distribution</h2>
-        <p>Suggested loan burdens are displayed across federal and private options, by the year that the debt is taken on.</p>
-        <table class="table">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th>Stafford Subsidized Loans</th>
-            <th>Stafford Unsubsidized Loans</th>
-            <th>Private Loans</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for key, value in loans.items() %}
-            <tr>
-              <th scope="row">{{ key+1 }}</th>
-              <td>{{ value['Subsidized'] }}</td>
-              <td>{{ value['Unsubsidized'] }}</td>
-              <td>{{ value['Private'] }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-
-        <p class="font-weight-bold font-italic"> Note: the provided loan distribution and repayment projections are calculated based on the provided annual loan burden, which is often placed at the lowest cost; students' actual costs may be higher. </p>
-
-        <div class="col-xs-12" style="height:8px;"></div>
-        <h2>Standard Repayment Plan</h2>
-        <p>The standard repayment plan is the most basic federal and private loan management plan, involving fixed monthly payments that guarantee the loan is paid off after 10 years. The basics of what your plan would like, based on the annual loan burden you identified and prospective distribution of federal and private loans we recommend, are displayed below.</p>
-        <div class="row">
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title text-center text-center">Monthly Payments</h5>
-                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[0] }}</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title text-center">Total Interest</h5>
-                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[1] }}</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title text-center">Total Loan Burden</h5>
-                <p class="card-text text-center"><span style="font-size: 60px; font-weight: bold;">{{ total[2] }}</span></p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xs-12" style="height:30px;"></div>
-
-        <h2>Your Plan's Practicality</h2>
-        <p>One of the biggest issues behind the student loan debt crisis is that borrowers overestimate how much loans they should be taking on. Falling behind on monthly payments, especially with the standard plan, can lead to interest accumulating on top of unpaid interest rather than a decreasing principal, leaving you stuck footing a bigger bill. <span class="font-weight-bold"> Optimally, borrowers should be spending a maximum of 10% of their monthly discretionary income paying back student loans. Given your prospective occupation and monthly payments rate under the standard plan, the percent of your monthly income that would go toward repaying student debt, compared to the 10% threshold, is displayed below. If 10% - 20% of your income was being used to pay off your student debt, for example, we would display that your monthly repayment levels vary from 100% to 200% below.  </span> </p>
-        {% if pct_range[0] > 100 %}
-          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #CC0000;">{{pct_range_text}}</span></p>
-          <p class="font-weight-bold font-italic"> Too much of your monthly disposable income is going toward paying off student loans, indicating that you may need to pursue a different career path. </p>
-        {% elif pct_range[1] < 100 %}
-          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #006600;">{{pct_range_text}}</span></p>
-          <p class="font-weight-bold font-italic"> The proportion of your monthly disposable income falls under 10%, indicating that you carry a 'safe' level of student debt and should be able to make all your payments. </p>
-        {% else %}
-          <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #FFCD4A;">{{pct_range_text}}</span></p>
-          <p class="font-weight-bold font-italic"> While at the beginning of your career, your monthly disposable income seems to be too low to safely complete monthly payments, you reach a level of safety as your career progresses and income increases. Consider exploring some of the Income-Driven Repayment Plans, listed below, as an alternative for the fixed payments offered by the Standard Plan. </p>
-        {% endif %}
-
-        <p class="font-weight-light">*Under the Public Service Loan Forgiveness (PSLF) program, employees of a government or non-profit organization can receive loan forgiveness on their remaining balance after having made 10 years of qualifying monthly payments. </p>
-
-        <div class="col-xs-12" style="height:12px;"></div>
-
-        <h2>Alternative Repayment Plans</h2>
-        <p>The US government sponsors a variety of alternative repayment plans for federal loans that can lighten the monthly debt burden and, sometimes, even offer debt forgiveness. To learn more about various loan options, visit our Variations page, and finish your FAFSA to discover your eligibility for these plans.</p>
-
-        <!-- <form action="" method="post">
-          <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="submit" class="btn btn-secondary" name="extended" value="extended">Extended</button>
-            <button type="submit" class="btn btn-secondary" name="icr" value="icr">Income-Driven</button>
-          </div>
-        </form> -->
-
-        <!-- {% for plan in [extended, icr] %} -->
-        <h3>{{plans[plan[0][2]]}}</h3>
-        <p>{{desc[plan[0][2]]}}</p>
-        <table class="table">
-        <thead>
-          <tr>
-            {% for title in plan[0]: %}
-              <th>{{ title }}</th>
-            {% endfor %}
-          </tr>
-        </thead>
-        <tbody>
-          {% for index in [1,2,3,4] %}
-            <tr>
-              <th scope="row">{{ plan[index][0] }}</th>
-              <td>{{ plan[index][1] }}</td>
-              <td>{{ plan[index][2] }}</td>
-              <td><span style="color: green; font-weight: bold;">{{ plan[index][3] }}</span></td>
-            </tr>
-          {% endfor %}
-        </tbody>
-        </table>
-        <!-- {% endfor %} -->
-
-        <main role="main" class="container">
-          <div class="jumbotron">
-            <h1>Repayment Plan Options</h1>
-            <p class="lead">Learn about the pros and cons of various federal repayment plans.</p>
-            <a class="btn btn-lg btn-primary" href={{ url_for('types') }} role="button">Discover repayment options &raquo;</a>
-          </div>
-        </main>
-      {% endif %}
-
-      <!-- <div class="col-xs-12" style="height:15px;"></div> -->
-
 
       <hr>
     </main><!-- /.container -->
 
     <footer class="container">
-      <p>&copy; The LoanCalc Company</p>
+      <p>Calculated by The LoanCalc Company</p>
     </footer>
 
     <!-- Bootstrap core JavaScript

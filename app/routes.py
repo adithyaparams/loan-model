@@ -10,7 +10,6 @@ import models
 
 def min_max_discretionary(income_dist, family, monthly):
     elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
-    print(income_dist[0], income_dist[9], family, file=sys.stderr)
     min = monthly*12/(income_dist[0] - elev_pov_line[family-1])
     max = monthly*12/(income_dist[9] - elev_pov_line[family-1])
     return [int(max*1000), int(min*1000)]
@@ -36,7 +35,7 @@ def icr_loans(standard_loans, loan_dist, income, family):
     table = []
     eloans = models.consolidate_debt(loan_dist, 'federal', 20)
     table.append(['', 'Standard', 'ICD', 'Savings'])
-    icr_monthly = (income-elev_pov_line[family])/12*.2
+    icr_monthly = (income-elev_pov_line[family-1])/12*.2
     table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(icr_monthly), stringify(-eloans[0]+icr_monthly)])
     table.append(['Total Balance', stringify(standard_loans[2]), stringify(eloans[2]), stringify(-eloans[2]+standard_loans[2])])
     diff = eloans[2]-240*icr_monthly
@@ -48,6 +47,8 @@ def career_list():
     careers = pd.Series.tolist(occupation[occupation['OCC_GROUP'] == 'major']['OCC_TITLE'])
     for minor in pd.Series.tolist(occupation[occupation['OCC_GROUP'] == 'minor']['OCC_TITLE']):
         careers.append(minor)
+    for broad in pd.Series.tolist(occupation[occupation['OCC_GROUP'] == 'broad']['OCC_TITLE']):
+        careers.append(broad)
     return careers
 
 @app.route('/')
@@ -66,16 +67,14 @@ def types():
 @app.route('/calc', methods=['GET', 'POST'])
 def calc():
     form = LoanForm()
-    print(request.form, file=sys.stderr)
     if 'submission' in request.form:
-        print(request.form, file=sys.stderr)
         career=request.form['career']
         # race=request.form['race']
         # gender=request.form['gender']
         eligibility=request.form['eligibility']
         college_term=request.form['term']
-        family_size=int(request.form['family'])
-        actual=int(request.form['actual'])
+        family_size=request.form['family']
+        actual=request.form['actual']
         dependency=request.form['dependency']
         dependency = True if dependency == 'Dependent' else False
         eligibility = True if eligibility == 'Eligible' else False
@@ -87,7 +86,6 @@ def calc():
     #     plan = icr
 
     plan = []
-    total = ['']*3
     plans = {'Extended':'Extended Repayment Plan', 'ICD':'Income-Driven Repayment (ICD) Plans'}
     desc = {'Extended':'If you need to make lower monthly payments over a longer period of time than under \
                 plans such as the Standard Repayment Plan, then the Extended Repayment Plan may be right for you.',
@@ -113,9 +111,18 @@ def calc():
         federal_loans = models.consolidate_debt(all_loans[0], 'federal')
         private_loans = models.consolidate_debt(all_loans[0], 'private')
         total_num = list(map(add, federal_loans, private_loans))
-        total[0] = '$' + place_value(total_num[0])
-        total[1] = '$' + place_value(total_num[1])
-        total[2] = '$' + place_value(total_num[2])
+
+        federal_text_loans = ['']*5
+        private_text_loans = ['']*5
+        for i in range(0,3):
+            federal_text_loans[i] = stringify(federal_loans[i])
+            private_text_loans[i] = stringify(private_loans[i])
+        federal_text_loans[3] = str(federal_loans[3]) + '%'
+        private_text_loans[3] = str(private_loans[3]) + '%'
+        federal_text_loans[4] = 'Federal'
+        private_text_loans[4] = 'Private'
+        print(federal_text_loans, file=sys.stderr)
+        print(private_text_loans, file=sys.stderr)
 
         occupation_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
         # incomes = models.salary_proj(occupation_income, gender, race)
@@ -128,5 +135,7 @@ def calc():
         # global icr
         icr = icr_loans(federal_loans, all_loans[0], occupation_income, family_size)
 
-    return render_template('calc.html', form=form, plans=plans, total=total, loans=text_loans, extended=extended, careers=careers, plan=plan,
-                                icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text, loans_length=loans_length)
+        return render_template('results.html', plans=plans, loans=text_loans, extended=extended, plan=plan, federal=federal_text_loans,
+                                    private=private_text_loans, icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text)
+
+    return render_template('calc.html', form=form, careers=careers)

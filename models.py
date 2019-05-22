@@ -82,6 +82,7 @@ def loan_division(annual_loan_burden, sub_eligible, college_term, dependent):
     return [loans, text_loans]
 
 def consolidate_debt(loan_dist, type, term=10):
+    interest_dict = {'federal': 5.05, 'private': 7}
     payments = [0,0]
     monthly = 0
     total_interest = 0
@@ -101,7 +102,7 @@ def consolidate_debt(loan_dist, type, term=10):
             monthly += payments[0]
             total_interest += payments[1]
             balance += payments[2]
-    return [monthly, total_interest, balance]
+    return [monthly, total_interest, balance, interest_dict[type]]
 
 def recur(n, principal, const, monthly):
     if n == 1:
