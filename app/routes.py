@@ -27,7 +27,7 @@ def extended_loans(standard_loans, loan_dist):
     table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(eloans[0]), stringify(-eloans[0]+standard_loans[0])])
     table.append(['Total Balance', stringify(standard_loans[2]), stringify(eloans[2]), stringify(-eloans[2]+standard_loans[2])])
     table.append(['Debt Forgiveness', '$0', '$0', '$0'])
-    table.append(['Repayment Period', '~10yrs', '~20yrs', '-10yrs'])
+    table.append(['Repayment Period', '10yrs', '20yrs', '-10yrs'])
     return table
 
 def icr_loans(standard_loans, loan_dist, income, family):
@@ -36,11 +36,12 @@ def icr_loans(standard_loans, loan_dist, income, family):
     eloans = models.consolidate_debt(loan_dist, 'federal', 20)
     table.append(['', 'Standard', 'ICD', 'Savings'])
     icr_monthly = (income-elev_pov_line[family-1])/12*.2
-    table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(icr_monthly), stringify(-eloans[0]+icr_monthly)])
+    icr_monthly = icr_monthly if icr_monthly < eloans[0] else eloans[0]
+    table.append(['Monthly Payments', stringify(standard_loans[0]), stringify(icr_monthly), stringify(standard_loans[0]-icr_monthly)])
     table.append(['Total Balance', stringify(standard_loans[2]), stringify(eloans[2]), stringify(-eloans[2]+standard_loans[2])])
-    diff = eloans[2]-240*icr_monthly
+    diff = eloans[0]-icr_monthly if icr_monthly < eloans[0] else 0
     table.append(['Debt Forgiveness', '$0', stringify(diff), stringify(diff)])
-    table.append(['Repayment Period', '~10yrs', '~20yrs', '-10yrs'])
+    table.append(['Repayment Period', '10yrs', '20yrs', '-10yrs'])
     return table
 
 def career_list():
@@ -86,7 +87,7 @@ def calc():
     #     plan = icr
 
     plan = []
-    plans = {'Extended':'Extended Repayment Plan', 'ICD':'Income-Driven Repayment (ICD) Plans'}
+    plans = {'Extended':'Extended Repayment Plan (only Federal Loans)', 'ICD':'Income-Driven Repayment (ICD) Plans (only Federal Loans)'}
     desc = {'Extended':'If you need to make lower monthly payments over a longer period of time than under \
                 plans such as the Standard Repayment Plan, then the Extended Repayment Plan may be right for you.',
                 'ICD':'An income-driven repayment plan sets your monthly student loan payment at an amount that \
@@ -121,8 +122,6 @@ def calc():
         private_text_loans[3] = str(private_loans[3]) + '%'
         federal_text_loans[4] = 'Federal'
         private_text_loans[4] = 'Private'
-        print(federal_text_loans, file=sys.stderr)
-        print(private_text_loans, file=sys.stderr)
 
         occupation_income = pd.Series.item(occupation[occupation['OCC_TITLE'] == career]['A_MEAN'].iloc[[0]])
         # incomes = models.salary_proj(occupation_income, gender, race)
