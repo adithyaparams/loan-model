@@ -8,11 +8,11 @@ import models
 
 # global extended, icr
 
-def min_max_discretionary(income_dist, family, monthly):
+def min_max_discretionary(income_dist, family, monthly, cutoff=15):
     elev_pov_line = [18090, 24360, 30630, 36900, 43170, 49440, 55710, 61980]
     min = monthly*12/(income_dist[0] - elev_pov_line[family-1])
     max = monthly*12/(income_dist[9] - elev_pov_line[family-1])
-    return [int(max*1000), int(min*1000)]
+    return [int(max*100/cutoff*100), int(min*100/cutoff*100)]
 
 def place_value(number):
     return ("{:,}".format(number))
@@ -108,6 +108,7 @@ def calc():
         all_loans = models.loan_division(actual, eligibility, college_term, dependency)
         text_loans = all_loans[1]
         loans_length = len(text_loans)
+        annual = stringify(actual)
 
         federal_loans = models.consolidate_debt(all_loans[0], 'federal')
         private_loans = models.consolidate_debt(all_loans[0], 'private')
@@ -129,12 +130,15 @@ def calc():
         pct_range = min_max_discretionary(incomes, family_size, total_num[0])
         pct_range_text = str(pct_range[0]) + "% - " + str(pct_range[1]) + "%"
 
+        if pct_range[0] < 0 or pct_range[1] < -1:
+            return render_template('calc.html', form=form, careers=careers, income_error='\nIt seems the average income for your prospective career is so small relative to the poverty line for your suggested family size that there would not even be enough financial flexibility to pay for basic necessities. Please reconsider your career choice or prospective family size.')
+
         # global extended
         extended = extended_loans(federal_loans, all_loans[0])
         # global icr
         icr = icr_loans(federal_loans, all_loans[0], occupation_income, family_size)
 
         return render_template('results.html', plans=plans, loans=text_loans, extended=extended, plan=plan, federal=federal_text_loans,
-                                    private=private_text_loans, icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text)
+                                    private=private_text_loans, icr=icr, desc=desc, pct_range=pct_range, pct_range_text=pct_range_text, total=annual)
 
-    return render_template('calc.html', form=form, careers=careers)
+    return render_template('calc.html', form=form, careers=careers, income_error='')

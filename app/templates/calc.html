@@ -86,14 +86,14 @@
           {% endfor %}
         </div>
         <div class="form-group">
-          <label for="family">How large do you expect your family to become in the 10 years after graduating college?</label>
+          <label for="family">How large do you expect your household size to become in the 10 years after graduating college?</label>
           <input type="number" class="form-control" id="family" name="family" placeholder="Family Size">
           {% for error in form.family.errors %}
             <span style="color: red;">{{ error }}</span>
           {% endfor %}
         </div>
         <div class="form-group">
-          <label for="actual">How much do you expect to take out in loans each year?</label>
+          <label for="actual">How much do you expect to take out in loans each year (after scholarships, grants, and family contribution)?</label>
           <input type="number" class="form-control" id="actual" name="actual" placeholder="Annual Loan Burden">
           {% for error in form.actual.errors %}
             <span style="color: red;">{{ error }}</span>
@@ -113,13 +113,13 @@
             <option>Dependent</option>
             <option>Independent</option>
           </select>
-          <small class="form-text text-muted">If you don't know your dependency status, check out https://studentaid.ed.gov/sa/fafsa/filling-out/dependency#dependency-questions.</small>
+          <small class="form-text text-muted">If you don't know your dependency status, check out these <a href="https://studentaid.ed.gov/sa/fafsa/filling-out/dependency#dependency-questions" target="_blank"> questions</a>.</small>
         </div>
         <button type="submit" class="btn btn-success" name="submission" value="submission">Submit</button>
       </form>
 
       <br />
-
+      <p style="color: red;">{{ income_error }}</p>
 
       <hr>
     </main><!-- /.container -->

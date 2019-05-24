@@ -47,6 +47,9 @@
 
     <main role="main" class="container">
       <h1 style="font-weight: bold;">Student Debt Calculator</h1>
+
+      <p>*Click the back button to make adjustments to your original input and resubmit the form.</p>
+
       </br>
 
       <!-- <div class="col-xs-12" style="height:10px;"></div> -->
@@ -59,6 +62,7 @@
             <th>Stafford Subsidized Loans</th>
             <th>Stafford Unsubsidized Loans</th>
             <th>Private Loans</th>
+            <th>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -68,6 +72,7 @@
               <td>{{ value['Subsidized'] }}</td>
               <td>{{ value['Unsubsidized'] }}</td>
               <td>{{ value['Private'] }}</td>
+              <td>{{ total }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -106,16 +111,16 @@
       <div class="col-xs-12" style="height:20px;"></div>
 
       <h2>Your Plan's Practicality</h2>
-      <p>One of the biggest issues behind the student loan debt crisis is that borrowers overestimate how much loans they should be taking on. Falling behind on monthly payments, especially with the standard plan, can lead to interest accumulating on top of unpaid interest rather than a decreasing principal, leaving you stuck footing a bigger bill. <span class="font-weight-bold"> Optimally, borrowers should be spending a maximum of 10% of their monthly discretionary income paying back student loans. Given your prospective occupation and monthly payments rate under the standard plan, the percent of your monthly income that would go toward repaying student debt, compared to the 10% threshold, is displayed below. If 10% - 20% of your income was being used to pay off your student debt, for example, we would display that your monthly repayment levels vary from 100% to 200% below.  </span> </p>
+      <p>One of the biggest issues behind the student loan debt crisis is that borrowers overestimate how much loans they should be taking on. Falling behind on monthly payments, especially with the standard plan, can lead to interest accumulating on top of unpaid interest rather than a decreasing principal, leaving you stuck footing a bigger bill. <span class="font-weight-bold"> Optimally, borrowers should be spending a maximum of 15% of their monthly discretionary income paying back student loans. Given your prospective occupation and monthly payments rate under the standard plan, the percent of your monthly income that would go toward repaying student debt, compared to the 15% threshold, is displayed below. If 15% - 30% of your income was being used to pay off your student debt, for example, we would display that your monthly repayment levels vary from 100% to 200% below.  </span> </p>
       {% if pct_range[0] > 100 %}
         <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #CC0000;">{{pct_range_text}}</span></p>
-        <p class="font-weight-bold font-italic text-center"> Too much of your monthly disposable income is going toward paying off student loans, indicating that you may need to pursue a different career path or reevaluate your college plans. </p>
+        <p class="font-weight-bold font-italic text-center h4"> Too much of your monthly disposable income is going toward paying off student loans, indicating that you may need to pursue a different career path or reevaluate your college plans. </p>
       {% elif pct_range[1] < 100 %}
         <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #006600;">{{pct_range_text}}</span></p>
-        <p class="font-weight-bold font-italic text-center"> The proportion of your monthly disposable income falls under 10%, indicating that you carry a 'safe' level of student debt and should be able to make all your payments. </p>
+        <p class="font-weight-bold font-italic text-center h4"> The proportion of your monthly disposable income falls under 15%, indicating that you carry a 'safe' level of student debt and should be able to make all your payments. </p>
       {% else %}
         <p class="card-text text-center"><span style="font-size: 96px; font-weight: bold; color: #FFCD4A;">{{pct_range_text}}</span></p>
-        <p class="font-weight-bold font-italic text-center"> While at the beginning of your career, your monthly disposable income seems to be too low to safely complete monthly payments, you reach a level of safety as your career progresses and income increases. Consider exploring some of the Income-Driven Repayment Plans, listed below, as an alternative for the fixed payments offered by the Standard Plan. </p>
+        <p class="font-weight-bold font-italic text-center h4"> While at the beginning of your career, your monthly disposable income seems to be too low to safely complete monthly payments, you reach a level of safety as your career progresses and income increases. Consider exploring some of the Income-Driven Repayment Plans, listed below, as an alternative for the fixed payments offered by the Standard Plan. </p>
       {% endif %}
 
       <p class="font-weight-light">Note: Under the Public Service Loan Forgiveness (PSLF) program, employees of a government or non-profit organization can receive loan forgiveness on their remaining balance after having made 10 years of qualifying monthly payments. </p>
